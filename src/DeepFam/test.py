@@ -8,6 +8,7 @@ from datetime import datetime
 import os
 import math
 from sklearn.metrics import roc_auc_score
+from sklearn.metrics import confusion_matrix
 
 import tensorflow as tf
 import numpy as np
@@ -96,9 +97,25 @@ def test( FLAGS ):
       # micro precision
       # logging("%s: micro-precision = %.5f" % 
       #       (datetime.now(), (hit_count/total_count)), FLAGS)
+
       auc_val = roc_auc_score(label_list, pred_list)
       logging("%s: micro-precision = %.5f, auc = %.5f" % 
             (datetime.now(), (hit_count/total_count), auc_val), FLAGS)
+
+      threshold = 0.5
+      pred_y = (pred_list[:, 1] >= threshold).astype(int)
+
+      TN, FP, FN, TP = confusion_matrix(label_list, pred_y, labels=[0, 1]).ravel()
+
+      Sensitivity = round((TP/(TP+FN)), 4) if TP+FN > 0 else 0
+      Specificity = round(TN/(FP+TN), 4) if FP+TN > 0 else 0
+      Precision = round(TP/(TP+FP), 4) if TP+FP > 0 else 0
+      Accuracy = round((TP+TN)/(TP+FP+TN+FN), 4)
+      MCC = round(((TP*TN)-(FP*FN))/(math.sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN))),
+                  4) if TP+FP > 0 and FP+TN > 0 and TP+FN and TN+FN else 0
+      F1 = round((2*TP)/((2*TP)+FP+FN), 4)
+
+      logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}", FLAGS)
 
 
 
