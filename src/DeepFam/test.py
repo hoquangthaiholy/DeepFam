@@ -102,8 +102,7 @@ def test( FLAGS ):
       logging("%s: micro-precision = %.5f, auc = %.5f" % 
             (datetime.now(), (hit_count/total_count), auc_val), FLAGS)
 
-      threshold = 0.5
-      pred_y = (pred_list[:, 1] >= threshold).astype(int)
+      pred_y = [1 if i > FLAGS.threshold else 0 for i in pred_list]
 
       TN, FP, FN, TP = confusion_matrix(label_list, pred_y, labels=[0, 1]).ravel()
 
@@ -116,6 +115,7 @@ def test( FLAGS ):
       F1 = round((2*TP)/((2*TP)+FP+FN), 4)
 
       logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}", FLAGS)
+
 
 
 

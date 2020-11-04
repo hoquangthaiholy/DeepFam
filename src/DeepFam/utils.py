@@ -123,6 +123,12 @@ def argparser():
       default=["fc2"],
       help='Which layers should be restored. Default is ["fc2"].'
   )
+  parser.add_argument(
+      '--threshold',
+      type=float,
+      default=0.5,
+      help='Threshold in Confusion Matrix. Default is 0.5'
+  )
 
   FLAGS, unparsed = parser.parse_known_args()
 
