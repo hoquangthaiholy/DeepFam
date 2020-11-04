@@ -124,6 +124,12 @@ def argparser():
       help='Which layers should be restored. Default is ["fc2"].'
   )
   parser.add_argument(
+      '--out_file',
+      type=str,
+      default='output.txt',
+      help='File to print testing outbut. Default is "output.txt"'
+  )
+  parser.add_argument(
       '--threshold',
       type=float,
       default=0.5,
