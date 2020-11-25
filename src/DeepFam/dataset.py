@@ -60,13 +60,19 @@ def encoding_label_np( l, arr):
 ## ######################## ## 
 # works for large dataset
 class DataSet(object):
-  def __init__(self, fpath, seqlen, n_classes, need_shuffle = True):
+  def __init__(self, fpath, seqlen, n_classes, num_feature, is_raw, need_shuffle = True):
     self.SEQLEN = seqlen
     self.NCLASSES = n_classes
     self.charset = CHARSET
     self.charset_size = CHARLEN
 
     # read raw file
+    self.is_raw = is_raw
+    if self.is_raw:
+      print("Train raw sequence")
+    else:
+      self.charset_size = num_feature
+      print("Train other features")
     self._raw = self.read_raw( fpath )
 
     # iteration flags
@@ -143,7 +149,11 @@ class DataSet(object):
     with open( fpath, 'r') as tr:
       for row in tr.readlines():
         (label, seq) = row.strip().split("\t")
-        seqlen = len(seq)
+        if self.is_raw:
+          seqlen = len(seq)
+        else:
+          seq = seq.split(',')
+          seqlen = len(seq)/self.charset_size
 
         if (seqlen != self.SEQLEN):
           raise Exception("SEQLEN is different from input data (%d / %d)"
@@ -156,7 +166,7 @@ class DataSet(object):
   def parse_data(self, idxs, with_raw=False):
     isize = len(idxs)
 
-    data = np.zeros( (isize, CHARLEN * self.SEQLEN), dtype=np.float32 )
+    data = np.zeros( (isize, self.charset_size * self.SEQLEN), dtype=np.float32 )
     labels = np.zeros( (isize, self.NCLASSES), dtype=np.uint8 )    
     raw = []
 
@@ -164,7 +174,10 @@ class DataSet(object):
       label, seq = self._raw[ idx ]
 
       encoding_label_np(label, labels[i] )
-      encoding_seq_np(seq, data[i] )
+      if self.is_raw:
+        encoding_seq_np(seq, data[i] )
+      else:
+        data[i] = seq
       raw.append( (label, seq) )
 
     if with_raw:

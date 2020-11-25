@@ -28,6 +28,8 @@ def train( FLAGS ):
   dataset = DataSet( fpath = FLAGS.train_file, 
                       seqlen = FLAGS.seq_len,
                       n_classes = FLAGS.num_classes,
+                      num_feature = FLAGS.num_feature,
+                      is_raw = FLAGS.is_raw,
                       need_shuffle = True )
   # set character set size
   FLAGS.charset_size = dataset.charset_size

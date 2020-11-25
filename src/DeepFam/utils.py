@@ -1,8 +1,6 @@
 import argparse
 import os
 
-
-
 def argparser():
   parser = argparse.ArgumentParser()
   # for model
@@ -135,6 +133,18 @@ def argparser():
       default=0.5,
       help='Threshold in Confusion Matrix. Default is 0.5'
   )
+  parser.add_argument(
+      '--num_feature',
+      type=int,
+      default=20,
+      help='Number of features. If you use raw sequence, default value is 20.'
+  )
+  parser.add_argument(
+      '--is_raw',
+      type=lambda x: (str(x).lower() not in ['false','0', 'no']),
+      default=True,
+      help='Train raw sequence.'
+  )
 
   FLAGS, unparsed = parser.parse_known_args()
 
@@ -142,8 +152,6 @@ def argparser():
   assert( len(FLAGS.window_lengths) == len(FLAGS.num_windows) )
 
   return FLAGS
-
-
 
 
 def logging(msg, FLAGS):
