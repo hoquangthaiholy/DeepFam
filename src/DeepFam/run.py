@@ -15,6 +15,10 @@ if __name__ == '__main__':
   logging(str(FLAGS), FLAGS)
   logdir = FLAGS.log_dir
 
+  fout = open(FLAGS.out_file,'w')
+  fout.write('global_step,timestamp,TP,FP,TN,FN,Sens,Spec,Prec,Acc,MCC,F1,AUC\n')
+  fout.close()
+
   ### iterate over max_epoch
   for i in range( FLAGS.max_epoch ):
     logging("%s: Run epoch %d" % (datetime.now(), i), FLAGS)

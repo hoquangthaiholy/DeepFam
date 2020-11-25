@@ -118,9 +118,14 @@ def test( FLAGS ):
 
       fout = open(FLAGS.out_file,'a')
 
-      fout.write(f"{datetime.now()}: TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val} \n")
+      Prec = round(hit_count/total_count,4)
+      AUC = round(auc_val,4)
 
-      logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val}", FLAGS)
+      fout.write(f"{global_step},{datetime.now()},{TP},{FP},{TN},{FN},{Sensitivity},{Specificity},{Precision},{Accuracy},{MCC},{F1},{AUC}\n")
+
+      logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, AUC={auc_val}", FLAGS)
+      
+      fout.close()
 
 
 if __name__ == '__main__':
