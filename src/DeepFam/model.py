@@ -4,8 +4,6 @@ import tensorflow.contrib.slim as slim
 
 import re
 
-
-
 def inference(data, FLAGS, for_training=False, scope=None):
   pred, layers = network( data, FLAGS, 
                           is_training=for_training,

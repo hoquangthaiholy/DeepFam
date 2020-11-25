@@ -32,6 +32,8 @@ def test( FLAGS ):
   # set character set size
   FLAGS.charset_size = dataset.charset_size
 
+  fout = open(FLAGS.out_file,'w')
+
   with tf.Graph().as_default():
     # placeholder
     placeholders = get_placeholders(FLAGS)
@@ -73,8 +75,6 @@ def test( FLAGS ):
       start_time = time.time()
       total_batch_size = math.ceil( dataset._num_data / FLAGS.batch_size )
 
-      fout = open(FLAGS.out_file,'w')
-
       for step, (data, labels) in enumerate(dataset.iter_once( FLAGS.batch_size )):
         hits, pred_val = sess.run( [hit_op, prob], feed_dict={
           placeholders['data']: data,
@@ -108,7 +108,7 @@ def test( FLAGS ):
 
       pred_y = [1 if i > FLAGS.threshold else 0 for i in pred_list]
 
-      TN, FP, FN, TP = confusion_matrix(label_list, pred_y, labels=[0, 1]).ravel()
+      TN, FP, FN, TP = confusion_matrix(label_list, pred_y, labels=[1, 0]).ravel()
 
       Sensitivity = round((TP/(TP+FN)), 4) if TP+FN > 0 else 0
       Specificity = round(TN/(FP+TN), 4) if FP+TN > 0 else 0
@@ -118,11 +118,9 @@ def test( FLAGS ):
                   4) if TP+FP > 0 and FP+TN > 0 and TP+FN and TN+FN else 0
       F1 = round((2*TP)/((2*TP)+FP+FN), 4)
 
-      fout.write(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}\n")
+      fout.write(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val} \n")
 
-      logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}", FLAGS)
-
-
+      logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val}", FLAGS)
 
 
 if __name__ == '__main__':
