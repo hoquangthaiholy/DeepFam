@@ -32,8 +32,6 @@ def test( FLAGS ):
   # set character set size
   FLAGS.charset_size = dataset.charset_size
 
-  fout = open(FLAGS.out_file,'w')
-
   with tf.Graph().as_default():
     # placeholder
     placeholders = get_placeholders(FLAGS)
@@ -118,7 +116,9 @@ def test( FLAGS ):
                   4) if TP+FP > 0 and FP+TN > 0 and TP+FN and TN+FN else 0
       F1 = round((2*TP)/((2*TP)+FP+FN), 4)
 
-      fout.write(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val} \n")
+      fout = open(FLAGS.out_file,'a')
+
+      fout.write(f"{datetime.now()}: TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val} \n")
 
       logging(f"TP={TP}, FP={FP}, TN={TN}, FN={FN}, Sens={Sensitivity}, Spec={Specificity}, Prec={Precision}, Acc={Accuracy}, MCC={MCC}, F1={F1}, Micro-precision={hit_count/total_count}, AUC={auc_val}", FLAGS)
 
